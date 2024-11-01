@@ -1,0 +1,27 @@
+{% extends "base.html" %}
+
+{% block title %}Pneumonia Data{% endblock %}
+
+{% block content %}
+<div class="card">
+    <div class="card-header">
+        <h2 class="card-title">Prediction Inference Results</h2>
+    </div>
+    <div class="card-body">
+        <div 
+            hx-get="{{ url_for('table') }}" 
+            hx-trigger="load, pagination-updated from:body"
+            hx-target="#data-table"
+            hx-indicator=".spinner-border">
+            <div id="data-table">
+                <!-- Table will be loaded here -->
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Loading spinner -->
+<div class="spinner-border htmx-indicator" role="status">
+    <span class="visually-hidden">Loading...</span>
+</div>
+{% endblock %}

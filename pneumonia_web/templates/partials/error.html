@@ -1,0 +1,8 @@
+<div class="alert alert-danger" role="alert">
+    {{ message }}
+    <button class="btn btn-sm btn-outline-danger float-end"
+            hx-get="{{ url_for('table') }}"
+            hx-target="#data-table">
+        Retry
+    </button>
+</div>

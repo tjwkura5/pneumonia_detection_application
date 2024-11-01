@@ -1,0 +1,24 @@
+<div class="result-card">
+    <div class="row">
+        <div class="col-md-4">
+            <img src="data:image/jpeg;base64,{{ image }}" 
+                 class="img-fluid thumbnail" 
+                 alt="X-ray image">
+        </div>
+        <div class="col-md-8">
+            <div class="alert {% if prediction == 'Pneumonia' %}alert-danger{% else %}alert-success{% endif %}">
+                <h4 class="alert-heading">
+                    {% if prediction == 'Pneumonia' %}
+                        ⚠️ Pneumonia Detected
+                    {% else %}
+                        ✅ Normal
+                    {% endif %}
+                </h4>
+                <p>Confidence: {{ confidence }}</p>
+                <hr>
+                <small class="text-muted">File: {{ filename }}</small><br>
+                <small class="text-muted">Analyzed at: {{ timestamp }}</small>
+            </div>
+        </div>
+    </div>
+</div>

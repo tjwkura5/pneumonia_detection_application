@@ -1,8 +1,5 @@
 #!/bin/bash
 
-# Redirect stdout and stderr to a log file
-exec > /var/log/user-data.log 2>&1
-
 # Ensure all commands are run with superuser privileges
 echo "Running as user: $(whoami)"
 

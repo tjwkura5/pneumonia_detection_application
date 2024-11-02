@@ -310,7 +310,7 @@ resource "aws_security_group" "ml_ui_security_group" {
 }
 
 
-# EC2 Instances
+# EC2 Instances Public subnet
 resource "aws_instance" "ml_nginx_server" {
   ami                         = var.ec2_ami
   instance_type               = "t3.micro"
@@ -336,7 +336,6 @@ resource "aws_instance" "ml_nginx_server" {
   }
 }
 
-# EC2 Instances
 resource "aws_instance" "ml_monitoring_server" {
   ami                         = var.ec2_ami
   instance_type               = "t3.micro"
@@ -351,6 +350,8 @@ resource "aws_instance" "ml_monitoring_server" {
     Name = "ml_monitoring_server"
   }
 }
+
+# EC2 Instances Private subnet 
 
 resource "aws_instance" "ml_ui_server" {
   ami                         = var.ec2_ami

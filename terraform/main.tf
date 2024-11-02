@@ -388,7 +388,7 @@ resource "aws_instance" "ml_training_server" {
   key_name               = var.key_name
   user_data = <<-EOF
     #!/bin/bash
-    # Script to set up ML app server
+    # Script to set up ML training server
     
     # Redirect stdout and stderr to a log file
     exec > /var/log/user-data.log 2>&1

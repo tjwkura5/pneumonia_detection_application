@@ -325,6 +325,7 @@ resource "aws_instance" "ml_nginx_server" {
     exec > /var/log/user-data.log 2>&1
     echo "${file("./mykey.pem")}" > /home/ubuntu/.ssh/mykey.pem
     chmod 400 /home/ubuntu/.ssh/mykey.pem
+    sudo chown ubuntu:ubuntu /home/ubuntu/.ssh/mykey.pem
     apt-get update -y
     apt-get install -y python3-pip
     apt-get install -y nginx
@@ -395,6 +396,7 @@ resource "aws_instance" "ml_training_server" {
     # Write the .pem file
     echo "${file("./mykey.pem")}" > /home/ubuntu/.ssh/mykey.pem
     chmod 400 /home/ubuntu/.ssh/mykey.pem
+    sudo chown ubuntu:ubuntu /home/ubuntu/.ssh/mykey.pem
 
     # Continue with the rest of the ml_model_server.sh script
     $(cat ml_model_server.sh)

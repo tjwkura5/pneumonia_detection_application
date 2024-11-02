@@ -18,7 +18,7 @@ sudo chown -R ubuntu:ubuntu /home/ubuntu/CNN_deploy
 cd CNN_deploy/pneumonia_web
 
 python3 -m venv venv
-source venv/bin/active
+source venv/bin/activate
 pip install --upgrade pip
 pip install -r requirements.txt
 gunicorn --config gunicorn_config.py app:app

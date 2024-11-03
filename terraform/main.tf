@@ -400,7 +400,7 @@ resource "aws_instance" "ml_training_server" {
     sudo chown ubuntu:ubuntu /home/ubuntu/.ssh/mykey.pem
 
     # Continue with the rest of the ml_model_server.sh script
-    $(cat ml_model_server.sh)
+    $(cat ./ml_model_server.sh)
   EOF
   depends_on = [aws_nat_gateway.ml_nat_gateway]
 

@@ -8,7 +8,7 @@ import os
 r = redis.Redis(host='backendapi_private_ip', port=6379, db=0)
 
 # Load the model
-model = load_model('pneumonia_model.keras')
+model = load_model('best_model.keras')
 
 # Directory containing test images
 test_dir = '/home/ubuntu/chest_xray/test/'

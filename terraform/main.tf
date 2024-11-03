@@ -387,21 +387,7 @@ resource "aws_instance" "ml_training_server" {
   subnet_id              = aws_subnet.ml_private_subnet_training.id
   vpc_security_group_ids = [aws_security_group.ml_backend_security_group.id]
   key_name               = var.key_name
-  user_data = <<-EOF
-    #!/bin/bash
-    # Script to set up ML training server
-    
-    # Redirect stdout and stderr to a log file
-    exec > /var/log/user-data.log 2>&1
-    
-    # Write the .pem file
-    echo "${file("./mykey.pem")}" > /home/ubuntu/.ssh/mykey.pem
-    chmod 400 /home/ubuntu/.ssh/mykey.pem
-    sudo chown ubuntu:ubuntu /home/ubuntu/.ssh/mykey.pem
-
-    # Continue with the rest of the ml_model_server.sh script
-    $(cat ./ml_model_server.sh)
-  EOF
+  user_data = templatefile("./ml_model_server.sh", { my_key = file(var.my_key_path) })
   depends_on = [aws_nat_gateway.ml_nat_gateway]
 
   root_block_device {

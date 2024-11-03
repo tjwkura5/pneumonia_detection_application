@@ -8,56 +8,85 @@ from tensorflow.keras.callbacks import EarlyStopping, ModelCheckpoint
 from tensorflow.keras.applications import ResNet50
 base_model = ResNet50(weights='imagenet', include_top=False, input_shape=(224, 224, 3))
 
+# Unfreeze last 30 layers of ResNet50
+for layer in base_model.layers[-30:]:
+    layer.trainable = True
+
+from tensorflow.keras.layers import Dropout, BatchNormalization
+from tensorflow.keras.regularizers import l2
+
 # Add classification layers
 x = base_model.output
-x = GlobalAveragePooling2D()(x)  # This reduces the 7x7x2048 output to 2048
-x = Dense(512, activation='relu')(x)  # Add a dense layer to help with feature processing
+x = GlobalAveragePooling2D()(x)  # Reduces the output to 2048
+x = Dense(128, activation='relu')(x)
+x = BatchNormalization()(x)  # Moved after activation
+x = Dropout(0.5)(x)  # Added dropout after first dense layer
+x = Dense(256, activation='relu')(x)
+x = Dropout(0.5)(x)  # Another dropout layer
+x = Dense(128, activation='relu')(x)
 x = Dense(1, activation='sigmoid')(x)  # Final layer for binary classification
 
+from keras.optimizers import Adam
 model = Model(inputs=base_model.input, outputs=x)
-# Compile the model
+
+# Compile with reduced learning rate
 model.compile(
-    optimizer='adam',
+    optimizer=Adam(learning_rate=0.0001),
     loss='binary_crossentropy',
     metrics=['accuracy']
+
 )
 
 from tensorflow.keras.preprocessing.image import ImageDataGenerator
 
+# Updated data augmentation
 train_datagen = ImageDataGenerator(
     rescale=1./255,
-    rotation_range=20,
-    width_shift_range=0.2,
-    height_shift_range=0.2,
-    horizontal_flip=True
-)
-val_datagen = ImageDataGenerator(rescale=1./255)
-test_datagen = ImageDataGenerator(rescale=1./255)
-# Load the data
-train_generator = train_datagen.flow_from_directory(
-    '/home/ubuntu/chest_xray/train',
-    target_size=(224, 224),
-    batch_size=32,
-    class_mode='binary'
-)
-val_generator = val_datagen.flow_from_directory(
-    '/home/ubuntu/chest_xray/val',
-    target_size=(224, 224),
-    batch_size=32,
-    class_mode='binary'
-)
-test_generator = test_datagen.flow_from_directory(
-    '/home/ubuntu/chest_xray/test',
-    target_size=(224, 224),
-    batch_size=32,
-    class_mode='binary'
+    rotation_range=50,
+    width_shift_range=0.3,
+    height_shift_range=0.3,
+    shear_range=0.2,
+    zoom_range=0.3,
+    horizontal_flip=True,
+    fill_mode='nearest'
 )
 
+val_datagen = ImageDataGenerator(rescale=1./255)
+test_datagen = ImageDataGenerator(rescale=1./255)
+
+# Use class weights if needed
+class_weight = {0: 1.0, 1: 1.5}  # Adjust based on class imbalance analysis
+
+# Load the data
+train_generator = train_datagen.flow_from_directory(
+    '/content/chest_xray/train',
+    target_size=(224, 224),
+    batch_size=16,
+    class_mode='binary',
+    shuffle=True
+)
+val_generator = val_datagen.flow_from_directory(
+    '/content/chest_xray/val',
+    target_size=(224, 224),
+    batch_size=32,
+    class_mode='binary',
+    shuffle=False
+)
+test_generator = test_datagen.flow_from_directory(
+    '/content/chest_xray/test',
+    target_size=(224, 224),
+    batch_size=32,
+    class_mode='binary',
+    shuffle=False
+)
+
+from tensorflow.keras.callbacks import ReduceLROnPlateau
 
 # Callbacks
 callbacks = [
-    EarlyStopping(monitor='val_loss', patience=3, restore_best_weights=True),
-    ModelCheckpoint('best_model.keras', monitor='val_accuracy', save_best_only=True)
+    EarlyStopping(monitor='val_loss', patience=5, restore_best_weights=True),
+    ModelCheckpoint('best_model.keras', monitor='val_accuracy', save_best_only=True),
+    ReduceLROnPlateau(monitor='val_loss', factor=0.2, patience=3, min_lr=1e-6)
 ]
 
 # Train the model
@@ -66,11 +95,12 @@ history = model.fit(
     steps_per_epoch=train_generator.samples // train_generator.batch_size,
     validation_data=val_generator,
     validation_steps=val_generator.samples // val_generator.batch_size,
-    epochs=5,
+    epochs=20,
+    class_weight=class_weight,
     callbacks=callbacks
 )
 
-model.save('/home/ubuntu/models/pneumonia_model.keras')  # Using .keras format instead of .h5
+model.save('/home/ubuntu/CNN_deploy/model/best_model.keras')  # Using .keras format instead of .h5
 # Load the trained model for inference
 from tensorflow.keras.models import load_model
 

@@ -40,3 +40,8 @@ variable "aws_secret_key" {
   type        = string
   sensitive   = true
 }
+
+variable "my_key_path" {
+  default = "./mykey.pem"
+  description = "Path to the private key file"
+}

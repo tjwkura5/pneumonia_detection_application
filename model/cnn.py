@@ -59,21 +59,21 @@ class_weight = {0: 1.0, 1: 1.5}  # Adjust based on class imbalance analysis
 
 # Load the data
 train_generator = train_datagen.flow_from_directory(
-    '/content/chest_xray/train',
+    '/home/ubuntu/chest_xray/train',
     target_size=(224, 224),
     batch_size=16,
     class_mode='binary',
     shuffle=True
 )
 val_generator = val_datagen.flow_from_directory(
-    '/content/chest_xray/val',
+    '/home/ubuntu/chest_xray/val',
     target_size=(224, 224),
     batch_size=32,
     class_mode='binary',
     shuffle=False
 )
 test_generator = test_datagen.flow_from_directory(
-    '/content/chest_xray/test',
+    '/home/ubuntu/chest_xray/test',
     target_size=(224, 224),
     batch_size=32,
     class_mode='binary',
@@ -107,7 +107,7 @@ from tensorflow.keras.models import load_model
 import os
 # test the model all images in /content/chest_xray/test and get the predictions of each image
 # Get the list of image files in the test directory
-test_dir = '/content/chest_xray/test'
+test_dir = '/home/ubuntu/chest_xray/test'
 for root, dirs, files in os.walk(test_dir):
   for file in files:
     if file.endswith(('.jpg', '.jpeg', '.png')):

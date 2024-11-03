@@ -48,7 +48,7 @@ sudo chown -R ubuntu:ubuntu /home/ubuntu/chest_xray
 
 # Clone repository
 cd /home/ubuntu
-git clone https://github.com/kura-labs-org/AIWL1.git /home/ubuntu/CNN_deploy
+git clone https://github.com/tjwkura5/pneumonia_detection_application.git /home/ubuntu/CNN_deploy
 
 # Set permissions on the repo
 sudo chown -R ubuntu:ubuntu /home/ubuntu/CNN_deploy

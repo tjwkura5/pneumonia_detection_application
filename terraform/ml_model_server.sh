@@ -11,11 +11,39 @@ echo "${my_key}" > /home/ubuntu/.ssh/mykey.pem
 chmod 400 /home/ubuntu/.ssh/mykey.pem
 sudo chown ubuntu:ubuntu /home/ubuntu/.ssh/mykey.pem
 
-# Update and install basic packages
+# ************* Installing Node Exporter *****************************
+
+# Install necessary packages as root
 apt-get update && apt-get upgrade -y
+apt-get install -y wget
+
+# Download and install Node Exporter as root
+wget https://github.com/prometheus/node_exporter/releases/download/v1.6.0/node_exporter-1.6.0.linux-amd64.tar.gz
+tar xvfz node_exporter-1.6.0.linux-amd64.tar.gz
+sudo mv node_exporter-1.6.0.linux-amd64/node_exporter /usr/local/bin/
+rm -rf node_exporter-1.6.0.linux-amd64*
+
+# Create a systemd service for Node Exporter to run as 'ubuntu'
+cat <<EOL | sudo tee /etc/systemd/system/node_exporter.service
+[Unit]
+Description=Node Exporter
+
+[Service]
+User=ubuntu
+ExecStart=/usr/local/bin/node_exporter
+
+[Install]
+WantedBy=multi-user.target
+EOL
+
+# Start and enable Node Exporter as root
+sudo systemctl daemon-reload
+sudo systemctl start node_exporter
+sudo systemctl enable node_exporter
+
+# Update and install basic packages
 apt-get install -y python3-pip 
 apt-get install -y python3-venv 
-apt-get install -y wget 
 apt-get install -y git 
 apt-get install -y build-essential 
 apt-get install -y unzip

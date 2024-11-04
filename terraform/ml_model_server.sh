@@ -21,11 +21,11 @@ apt-get install -y build-essential
 apt-get install -y unzip
 
 # Install NVIDIA drivers and CUDA
-wget https://developer.download.nvidia.com/compute/cuda/repos/ubuntu2204/x86_64/cuda-keyring_1.1-1_all.deb
+wget https://developer.download.nvidia.com/compute/cuda/repos/ubuntu2404/x86_64/cuda-keyring_1.1-1_all.deb
 dpkg -i cuda-keyring_1.1-1_all.deb
-apt-get update -y
-apt-get -y install cuda-drivers
-apt-get install -y cuda
+apt update
+apt -y install cuda-drivers
+apt install -y cuda-toolkit-12-6 cudnn-cuda-12
 
 # Set up CUDA environment variables for immediate use in this script
 export PATH=/usr/local/cuda/bin:$PATH

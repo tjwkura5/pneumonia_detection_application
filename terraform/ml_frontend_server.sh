@@ -21,4 +21,4 @@ python3 -m venv venv
 source venv/bin/activate
 pip install --upgrade pip
 pip install -r requirements.txt
-gunicorn --config gunicorn_config.py app:app
+nohup gunicorn --config gunicorn_config.py app:app &

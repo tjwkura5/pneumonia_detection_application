@@ -246,7 +246,7 @@ resource "aws_security_group" "ml_backend_security_group" {
     from_port       = 5000
     to_port         = 5000
     protocol        = "tcp"
-    security_groups = [aws_security_group.ml_frontend_security_group.id]
+    security_groups = [aws_security_group.ml_ui_security_group.id]
     description     = "API access from frontend"
   }
   

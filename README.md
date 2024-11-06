@@ -38,6 +38,7 @@ In my terraform configuration I am setting up a machine environment in AWS, incl
 Our model is a ResNet50 (Residual Network with 50 layers) model which is a type of deep convolutional neural network (CNN) architecture used primarily for image classification tasks. The issue with our original model was that it was over predicting pneumonia so we employed several strategies to reduce overfitting.
 
 **Layer Configuration and Regularization**
+
    - **L2 Regularization**: Added to dense layers to prevent overfitting by penalizing large weights.
    - **Batch Normalization**: Helps to stabilize and speed up training by normalizing the output of each layer.
    - **Dropout**: Introduced after dense layers to randomly deactivate neurons during training, reducing overfitting.
@@ -64,6 +65,7 @@ x = Dropout(0.3)(x)  # Dropout
 ```
 
 **Fine-Tuning**
+
    - **Unfreezing Layers**: The top 15 layers of the ResNet50 model are unfrozen, allowing them to be trained specifically on the pneumonia X-ray dataset. This enables the model to adapt better to the task.
 
 ```python
@@ -73,6 +75,7 @@ for layer in base_model.layers[-15:]:
 ```
 
 **Learning Rate Schedule with Exponential Decay**
+
    - **Exponential Learning Rate Decay**: The learning rate starts small and decays over time, allowing the model to learn gradually and avoid overshooting during training.
 
 ```python
@@ -94,6 +97,7 @@ model.compile(
 ```
 
 **Data Augmentation Enhancements**
+
    - The augmentation strategy is more aggressive, incorporating **zoom**, **width/height shifts**, and **rotation**. This improves the model’s robustness to variations in the input data.
 
 ```python
@@ -109,6 +113,7 @@ train_datagen = ImageDataGenerator(
 ```
 
 **Enhanced Callbacks:**
+
    - **EarlyStopping**: This callback has a longer patience setting, allowing the model more time to learn before halting.
 
 ```python
